@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GTM SUPERBOWL by Trailway Growth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            overflow: hidden; /* Prevent scrolling on the body */
+        }
+        .game-container {
+            background: #111827 url('https://www.transparenttextures.com/patterns/football.png');
+            color: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align scoreboard to the top */
+            height: 100vh; /* Fix container to viewport height */
+            text-align: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .slides-container {
+            flex: 1; /* Take up remaining vertical space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.5s ease-in-out;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .play-button {
+            background-color: #22c55e;
+            color: #111827;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+        }
+        .choice-btn {
+            border: 2px solid #374151;
+            transition: all 0.2s;
+        }
+        .choice-btn:hover {
+            border-color: #22c55e;
+            background-color: #1f2937;
+        }
+        .feedback-panel {
+            display: none;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+        .feedback-good {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+        .feedback-bad {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        #field {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            height: 28px; /* Increased height for the football icon */
+        }
+        #ball {
+            /* SVG football icon */
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px; /* SVG width */
+            height: 20px; /* SVG height */
+            transition: left 0.5s ease-in-out;
+        }
+        .coach-tip {
+            position: relative;
+            background: #374151;
+            border-radius: .4em;
+            padding: 1em 1.5em;
+            margin-top: 2em;
+        }
+        .coach-tip:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #374151;
+            border-bottom: 0;
+            margin-left: -20px;
+            margin-bottom: -20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Scoreboard -->
+        <div id="scoreboard" class="w-full max-w-3xl mb-4 p-4 bg-gray-900 rounded-lg border border-gray-700 shadow-lg hidden">
+            <div class="flex justify-between items-center text-lg font-semibold">
+                <div id="down-marker">DOWN: 1</div>
+                <div id="yards-gained">YARDS GAINED: 0</div>
+                <div id="to-go">TO GO: 80</div>
+            </div>
+            <div id="field" class="w-full rounded-full mt-3 relative overflow-hidden">
+                <!-- Football SVG Icon -->
+                <svg id="ball" viewBox="0 0 100 58">
+                    <path d="M99.11,28.89A48.57,48.57,0,0,0,50,0,48.57,48.57,0,0,0,.89,28.89a3.8,3.8,0,0,0,0,1.22A48.57,48.57,0,0,0,50,58a48.57,48.57,0,0,0,49.11-27.89,3.8,3.8,0,0,0,0-1.22Z" style="fill:#8c5b40;"></path>
+                    <path d="M8.67,29.5a3.8,3.8,0,0,0,0-1.22.89.89,0,0,0-.22-.55l-.22-.22A48.51,48.51,0,0,1,50,1.22a48.51,48.51,0,0,1,41.78,26.3,1.11,1.11,0,0,0-.22.55,3.8,3.8,0,0,0,0,1.22,1.11,1.11,0,0,0,.22.55,48.51,48.51,0,0,1-41.78,26.3A48.51,48.51,0,0,1,8.22,30.05a1.11,1.11,0,0,0,.22-.55Z" style="fill:#663322;"></path>
+                    <path d="M50,7.5A223.47,223.47,0,0,0,29.33,29,223.47,223.47,0,0,0,50,50.5,223.47,223.47,0,0,0,70.67,29,223.47,223.47,0,0,0,50,7.5Z" style="fill:#fff;"></path>
+                    <line x1="50" y1="7.5" x2="50" y2="50.5" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                    <line x1="41.78" y1="14.39" x2="58.22" y2="14.39" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                    <line x1="41.78" y1="21.5" x2="58.22" y2="21.5" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                    <line x1="41.78" y1="29" x2="58.22" y2="29" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                    <line x1="41.78" y1="36.5" x2="58.22" y2="36.5" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                    <line x1="41.78" y1="43.61" x2="58.22" y2="43.61" style="fill:none;stroke:#8c5b40;stroke-miterlimit:10;stroke-width:2px;"></line>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Slides Container -->
+        <div class="slides-container w-full">
+            <!-- Slide 1: Kickoff -->
+            <div id="slide-1" class="slide active">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-green-400">Welcome to the GTM SUPERBOWL 🏈</h1>
+                <p class="mt-4 text-xl text-yellow-300 font-semibold">You are Greg Olsen. The game is on the line.</p>
+                <p class="mt-2 text-lg text-gray-400">Ready to build an offer so good it runs through cold traffic like a hot knife through churn?</p>
+                <button id="start-drive-btn" class="play-button mt-8 px-8 py-4 rounded-lg text-xl font-bold">▶️ Start the Drive</button>
+            </div>
+
+            <!-- Slide 2: The First Play -->
+            <div id="slide-2" class="slide">
+                <h2 class="text-3xl font-bold">First Play: You're selling data cleanup.</h2>
+                <p class="mt-2 text-lg text-gray-400">What do you lead with?</p>
+                <div class="mt-6 space-y-4">
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="0">“We do data cleanup.”</button>
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="30">“We cut time-to-reporting by 80% by fixing your GTM pipeline.”</button>
+                </div>
+                <div class="feedback-panel"></div>
+            </div>
+
+            <!-- Slide 3: Midfield Decision -->
+            <div id="slide-3" class="slide">
+                <h2 class="text-3xl font-bold">Midfield Decision: You're at the 50-yard line.</h2>
+                <p class="mt-2 text-lg text-gray-400">What's the next call?</p>
+                <div class="mt-6 space-y-4">
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="5">Offer a feature-rich product demo.</button>
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="25">Offer a guaranteed outcome with a unique mechanism.</button>
+                </div>
+                <div class="feedback-panel"></div>
+                <div id="coach-jeremy-tip" class="coach-tip hidden mt-8">
+                    <p class="text-yellow-300 font-semibold">🗣️ Coach Jeremy's Tip:</p>
+                    <p>You named your play: "SmartSync Engine." It’s working. The defense is confused.</p>
+                </div>
+            </div>
+
+            <!-- Slide 4: Risk Reversal Call -->
+            <div id="slide-4" class="slide">
+                <h2 class="text-3xl font-bold">It’s 3rd & 15. The game is on the line.</h2>
+                <p class="mt-2 text-lg text-gray-400">What do you offer to overcome buyer skepticism?</p>
+                <div class="mt-6 space-y-4">
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="0">“Let’s hop on a call.”</button>
+                    <button class="choice-btn w-full p-4 rounded-lg text-left" data-yards="100">“We’ll audit your workflows — if we find < $10K in savings, we walk.”</button>
+                </div>
+                <div class="feedback-panel"></div>
+            </div>
+
+            <!-- Slide 5: Victory Screen -->
+            <div id="slide-5" class="slide">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-green-400">🏆 VICTORY!</h1>
+                <p class="mt-4 text-2xl text-gray-300">You scored a touchdown! 🚀</p>
+                <p class="mt-4 text-lg text-gray-400">This is how outbound offers are supposed to feel. You won because you had:</p>
+                <ul class="mt-4 text-left inline-block list-disc list-inside text-gray-300 space-y-1">
+                    <li>A specific problem</li>
+                    <li>A crystal-clear outcome</li>
+                    <li>A unique mechanism</li>
+                    <li>A powerful risk reversal</li>
+                </ul>
+                <div class="mt-8">
+                    <button id="claim-prize-btn" class="play-button px-8 py-4 rounded-lg text-xl font-bold">🎁 Claim Your $1M Playbook</button>
+                </div>
+                 <button id="replay-btn-1" class="mt-4 text-gray-400 hover:text-white">Run a different play?</button>
+            </div>
+            
+            <!-- Slide 6: Final Prize -->
+            <div id="slide-6" class="slide">
+                 <h1 class="text-5xl md:text-6xl font-extrabold text-green-400">🏆 Click Play. Win $1M.</h1>
+                <p class="subtitle mt-8 text-2xl">🏈 You made it to the end zone.</p>
+                <p class="mt-4 text-lg max-w-2xl">This is the exact outbound playbook we used to help our clients generate over $1M in pipeline — in under 8 months, starting from zero.</p>
+                <p class="mt-6 font-bold text-xl">Want to know how to claim your prize?</p>
+                <div class="mt-6 text-left max-w-xl mx-auto space-y-4 text-lg">
+                    <p><span class="text-green-400 font-bold">💬 Use the playbook.</span> Try it in your next cold email, your next pitch, or your next sales call. You'll feel the momentum shift.</p>
+                    <p><span class="text-green-400 font-bold">🧠 Or hire us.</span> You be the QB, we’ll call the plays, block the noise, and get you to the red zone — fast.</p>
+                </div>
+                <p class="mt-8 text-xl font-bold">📣 Either way, the game’s live. Cold traffic won’t wait.</p>
+                <a href="http://www.trailwaygrowth.com" target="_blank" class="play-button inline-block mt-8 px-10 py-4 rounded-lg text-xl font-bold">Let's Turn Your Offer Into Your Best Closer</a>
+                <button id="replay-btn-2" class="block mx-auto mt-6 text-gray-400 hover:text-white">Play Again</button>
+            </div>
+            
+            <!-- Slide 7: Game Over Screen -->
+            <div id="slide-7" class="slide">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-red-500">Turnover on Downs</h1>
+                <p class="mt-4 text-2xl text-gray-300">Tough break, Greg. The defense read that play perfectly.</p>
+                <p class="mt-4 text-lg text-gray-400">A great offer needs to be undeniable on every down. Generic plays get stuffed at the line.</p>
+                <div class="mt-8">
+                    <button id="replay-btn-3" class="play-button px-8 py-4 rounded-lg text-xl font-bold">Huddle Up & Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Game State ---
+            let gameState = {
+                currentYardLine: 20, // Start on your own 20
+                down: 1,
+                currentSlide: 1,
+                touchdown: false,
+                isTurnover: false
+            };
+
+            // --- DOM Elements ---
+            const slides = document.querySelectorAll('.slide');
+            const scoreboard = document.getElementById('scoreboard');
+            const downMarker = document.getElementById('down-marker');
+            const yardsGainedEl = document.getElementById('yards-gained');
+            const toGoEl = document.getElementById('to-go');
+            const ball = document.getElementById('ball');
+
+            // --- Sound Effects ---
+            const successSynth = new Tone.Synth({
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+            }).toDestination();
+            const cheer = () => {
+                successSynth.triggerAttackRelease('C5', '8n', Tone.now());
+                successSynth.triggerAttackRelease('G5', '8n', Tone.now() + 0.2);
+            };
+            const touchdownCheer = () => {
+                const now = Tone.now();
+                successSynth.triggerAttackRelease("C5", "8n", now);
+                successSynth.triggerAttackRelease("E5", "8n", now + 0.2);
+                successSynth.triggerAttackRelease("G5", "8n", now + 0.4);
+                successSynth.triggerAttackRelease("C6", "4n", now + 0.6);
+            };
+            const failSynth = new Tone.NoiseSynth({
+                noise: { type: 'brown' },
+                envelope: { attack: 0.005, decay: 0.2, sustain: 0 }
+            }).toDestination();
+            const fumble = () => failSynth.triggerAttackRelease("4n");
+
+            // --- Game Logic ---
+            const updateUI = () => {
+                const yardsFromStart = gameState.currentYardLine - 20;
+                yardsGainedEl.textContent = `YARDS GAINED: ${yardsFromStart}`;
+                toGoEl.textContent = `TO GO: ${100 - gameState.currentYardLine}`;
+                downMarker.textContent = `DOWN: ${gameState.down}`;
+                const ballWidthPercentage = (32 / document.getElementById('field').offsetWidth) * 100;
+                ball.style.left = `calc(${gameState.currentYardLine}% - ${ballWidthPercentage / 2}%)`;
+            };
+
+            const showSlide = (slideNumber) => {
+                slides.forEach(slide => slide.classList.remove('active'));
+                const nextSlide = document.getElementById(`slide-${slideNumber}`);
+                if (nextSlide) {
+                    nextSlide.classList.add('active');
+                    gameState.currentSlide = slideNumber;
+                }
+            };
+            
+            const handleChoice = (e) => {
+                if (!e.target.matches('.choice-btn')) return;
+                Tone.start();
+                const slide = e.target.closest('.slide');
+                const feedbackPanel = slide.querySelector('.feedback-panel');
+                const yards = parseInt(e.target.dataset.yards, 10);
+
+                slide.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = true);
+
+                let feedbackText = '';
+                if (yards > 0) {
+                    feedbackText = `Nice read, Greg! You gain ${yards} yards.`;
+                    if (yards === 100) {
+                        gameState.touchdown = true;
+                        gameState.currentYardLine = 100;
+                        feedbackText = "TOUCHDOWN!!! You just ran it into the end zone. Your offer sold itself.";
+                        touchdownCheer();
+                    } else {
+                        gameState.currentYardLine += yards;
+                        cheer();
+                    }
+                    feedbackPanel.className = 'feedback-panel feedback-good';
+                    if(slide.id === 'slide-3' && yards > 5) {
+                        document.getElementById('coach-jeremy-tip').classList.remove('hidden');
+                    }
+                } else {
+                    feedbackText = "You’re stuck at the line. Cold prospects don’t buy labor. Turnover on downs.";
+                    fumble();
+                    feedbackPanel.className = 'feedback-panel feedback-bad';
+                    gameState.isTurnover = true;
+                }
+                
+                feedbackPanel.textContent = feedbackText;
+                feedbackPanel.style.display = 'block';
+                
+                gameState.down++;
+                updateUI();
+
+                setTimeout(() => {
+                    if (gameState.touchdown) {
+                        showSlide(5); // Victory slide
+                    } else if (gameState.isTurnover) {
+                        showSlide(7); // Game Over slide
+                    } else {
+                        showSlide(gameState.currentSlide + 1);
+                    }
+                }, 2500);
+            };
+
+            const startGame = () => {
+                Tone.start();
+                scoreboard.classList.remove('hidden');
+                updateUI();
+                showSlide(2);
+            };
+
+            const resetGame = () => {
+                gameState = { currentYardLine: 20, down: 1, currentSlide: 1, touchdown: false, isTurnover: false };
+                scoreboard.classList.add('hidden');
+                document.querySelectorAll('.feedback-panel').forEach(p => {
+                    p.style.display = 'none';
+                    p.textContent = '';
+                });
+                document.querySelectorAll('.choice-btn').forEach(btn => btn.disabled = false);
+                document.getElementById('coach-jeremy-tip').classList.add('hidden');
+                showSlide(1);
+            };
+
+            // --- Event Listeners ---
+            document.getElementById('start-drive-btn').addEventListener('click', startGame);
+            document.querySelector('.slides-container').addEventListener('click', handleChoice);
+            document.getElementById('claim-prize-btn').addEventListener('click', () => showSlide(6));
+            document.getElementById('replay-btn-1').addEventListener('click', resetGame);
+            document.getElementById('replay-btn-2').addEventListener('click', resetGame);
+            document.getElementById('replay-btn-3').addEventListener('click', resetGame);
+            
+            window.addEventListener('resize', updateUI);
+        });
+    </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
